@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Adventure Garden</title>
+	<link href="assets/css/main.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="lib/js/easeljs-0.4.2.min.js"></script>
+	<script>
+		var canvas;
+        var stage;
+				
+		function init(){
+			//console.log('init');
+			
+			// create stage and point it to the canvas:
+			
+
+			//messageField = new Text("Loading Adventure Garden", "bold 24px Arial", "#000");
+			//messageField.maxWidth = 1000;
+			//messageField.textAlign = "center";
+			//messageField.x = canvas.width / 2;
+			//messageField.y = canvas.height / 2;
+			//stage.addChild(messageField);
+			//stage.update(); 	//update the stage to show text
+		};
+		
+		var AV = {};
+		AV.Playground = function() {
+			this.init = function() {
+				canvas = document.getElementById("gameCanvas");
+				stage = new Stage(canvas);
+				stage.enableMouseOver();
+			};
+			
+			/**
+			 * Grid handles the collection of cells and allows building up rows
+			 */
+			this.Grid = function() {
+				var rowlen = 10;
+				var numrows = 6;
+				var that = this;
+				
+				//Stores the entire grid of cells in an array
+				this.matrix = [];
+				
+				this.build = function() {
+					var i = 1;
+					
+					while(i <= numrows) {
+						this.matrix[i] = this.buildRow(i);
+						i++;
+					}
+				};
+				
+				this.buildRow = function(rowNum) {
+					var row = [];
+				
+					var i = 1;
+					while(i <= rowlen) {
+						var cell = new this.Cell(i, rowNum);
+						row[i] = cell;
+					
+						stage.addChild(cell.shape);
+						i++;
+					}
+					
+					return row;
+				};
+				
+				/**
+				 * Creating cells with an index and a row number to populate the matrix
+				 * @property shape:Shape
+				 * @method setColour(colour)
+				 */
+				this.Cell = function(idx, rowNum){
+					this.row = rowNum;
+					this.column = idx;
+					
+					var cell = this;
+					var neighbours = {
+						'tr': 	{'r': -1, 	'c': 1},
+						'r':	{'r': 0, 	'c': 1},
+						'br':	{'r': 1, 	'c': 1},
+						'bl':	{'r': 1, 	'c': 0},
+						'l':	{'r': 0, 	'c': -1},
+						'tl':	{'r': -1, 	'c': 1},
+					};
+					
+					var g = new Graphics();
+					g.setStrokeStyle(1);
+					g.beginStroke(Graphics.getRGB(50,50,50));
+					g.beginFill(Graphics.getRGB(200,200,200));
+					g.drawPolyStar (0, 0, this.sizes.radius, this.sizes.sides , 0 , this.sizes.orientation);
+					
+					//this.graphic = g;
+					
+					var shape = new Shape(g);
+					shape.x = (idx * this.sizes.internalSizes.width) + (rowNum%2 * this.sizes.externalOffsets.x);
+					shape.y = rowNum * this.sizes.externalOffsets.y;
+					shape.mouseEnabled = true;
+					shape.onMouseOver = function() {
+						cell.setColor('#FF00FF');
+					};
+					shape.onMouseOut = function() {
+						cell.setColor('#CCCCCC');
+					};
+					
+					
+					this.shape = shape;
+					
+					/* set the colour of the cell */
+					this.setColor = function(color){
+						this.shape.graphics.beginFill(color);
+						this.shape.graphics.drawPolyStar (0, 0, this.sizes.radius, this.sizes.sides , 0 , this.sizes.orientation);
+						
+						stage.update();
+					};
+					
+					/* get the neighbours of the cell */
+					this.getNeighbours = function() {
+						//neighbours include clockwise tr, r, br, bl, l, tl
+						for(idx in neighbours) {
+							var r = this.row + neighbours[idx].r;
+							var c = this.column + neighbours[idx].c;
+							
+							console.log(r + ' ' + c);
+							
+							//console.log(typeof that.matrix[r][c]);
+						}
+					}
+				};
+				
+				this.Cell.prototype.sizes = {
+					sides: 6,
+					radius: 30,
+					internalSizes: { width: 52, heigth: 60}, //Distance from Shape center to left edge / top edge
+					externalOffsets: { x: 26, y: 45}, //Distance from Shape center to adjacent shape's center
+					orientation: 270, // Orientation angle from centre of first point of polygon
+				};
+			}
+		}
+		
+		window.onload = function(){
+			var game = new AV.Playground();  	//Set up the playground
+			game.init();
+			
+			var grid = new game.Grid();			//Set up a grid
+			grid.build();
+			
+			
+			//grid.matrix[1][1].setColor("#FF00FF");
+			
+			grid.matrix[1][1].getNeighbours();
+			
+			stage.update();
+		};
+		
+	</script>
+</head>
+
+<body>
+	<div id="content">
+		<canvas id="gameCanvas" width="960" height="600"></canvas>
+	</div>
+</body>
+
+</html>
