@@ -9,11 +9,73 @@
 	<script>
 		var canvas;
 		var stage;
+		var game;
+		
+		//var maxtick = 1000000000;
+		//var tickcount = 0;
 				
 		window.onload = function(){
-			var game = new AV.Playground();  	//Set up the playground
+			game = new AV.Playground();  	//Set up the playground
 			game.init();
 		};
+		
+		function tick(){
+			//if(tickcount < maxtick) {
+				var row;
+				var col;
+				
+				//console.log(stage.mouseX + ', ' + stage.mouseY);
+			
+				if(stage.mouseY >= 25 && stage.mouseY <= 65) {
+					//console.log(stage.mouseY);
+					row = 1;
+				}
+				
+				if(stage.mouseX >= 58 && stage.mouseX <= 98) {
+					col = 1;
+				}
+				
+				if(typeof row != 'undefined' && typeof col != 'undefined') {
+					game.grid.matrix[row][col].onMouseOver();
+				}
+				
+				//console.log(row + ', ' + col);
+				
+				/*
+				for(row in game.grid.matrix) {
+					//console.log(game.grid.matrix);
+					//console.log(game.grid.matrix[row]);
+					
+					for(col in game.grid.matrix[row]) {
+						//console.log(game.grid.matrix[row][col]);
+						game.grid.matrix[row][col].detectOver(stage.mouseX, stage.mouseY);
+					}
+				}
+				*/
+				
+			//} else {
+			//	stop();
+			//}
+			
+			//tickcount++;
+			
+			/*
+			var getTickCount = function() {
+				return tickcount++;
+			};
+			
+			return getTickCount;
+			*/
+		}
+		
+		/*
+		var getTickCount = tick();
+		getTickCount();
+		*/
+		
+		function stop(){
+			Ticker.removeListener(window);
+		}
 		
 	</script>
 </head>
