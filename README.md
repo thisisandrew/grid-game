@@ -8,6 +8,9 @@ Using the EaselJS library from CreateJS to create a 2D grid game of as yet unkno
 
 
 Playground: The overall playing area which holds Cells in Matrix
+
 Matrix: Array of arrays which holds all Cells
-Cell: An individual playing 'square', has neighbours defined by radius or adjacency
+
+Cell: An individual playing 'square', has neighbours defined by radius or adjacency.
+
 Neighbours: Definition is static for a given cell shape allowing easy calculation of adjacent neighbours.
